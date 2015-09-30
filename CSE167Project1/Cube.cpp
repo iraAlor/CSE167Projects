@@ -8,12 +8,13 @@
 
 #include "Window.h"
 #include "math.h"
-
+#include "Vector3.h"
 
 Cube::Cube(float size) : Drawable()
 {
     this->size = size;
     this->spinDir = 1;
+    orbit.identity();
 }
 
 Cube::~Cube()
@@ -122,20 +123,12 @@ void Cube::reset(){
     rotRate = 0.0;
 }
 void Cube::rotate(float scale){
-    float x = toWorld.get(3,0);
-    float y = toWorld.get(3,1);
-    if(x==0 && y ==0){
-        return;
-    }
-    float r = sqrt(x*x+y*y);
-    float pth = atan(y/x) + (x <0 ? -M_PI : 0);
-    pth+=scale*.10;
-    float nx = r*cos(pth);
-    float ny = r*sin(pth);
-    Matrix4 trans;
+  
+    Matrix4 rot;
+    rot.makeRotateZ(.10*scale);
+    toWorld = rot*toWorld;
     
-    trans.makeTranslate(nx-x,ny-y,0.0);
-    toWorld = trans*toWorld;
+  
 }
 void Cube::scale(float sFactor){
     Matrix4 scaly;
